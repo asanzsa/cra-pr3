@@ -428,6 +428,7 @@
                  (lambda (s)
                    ((par ((mcdnat (primero (absoluto r))) (primero (absoluto s)))) zero))))
 
+
 ;; PRACTICA.
 
 ;; Reducción a representante canónico.
@@ -465,20 +466,40 @@
                       (lambda (t)
                         ((reduce ((restaent r) s)) t)))))
 
+
+;; ###########################
+;; COMPROBAR A PARTIR DE AQUÍ.
+;; ###########################
+
 ;; Operación aritmética Resta.
 ;; ejemplos.- 
 ;;    ((inverso nueve) tres)
 ;;    (testenteros ((inverso nueve) tres) cuatro)
+
+; algoritmo de euclides extendido.
+;http://www.dc.uba.ar/materias/algI/2013/cuat2/Material/Clase%2010
 (define inverso (lambda (r)
                     (lambda (s)
-                      ((esigualent ((mcdent (primero r)) (segundo r))) uno))))
+                      ((esigualent ((mcdent (primero r) (segundo r))) uno))))
 
-
+;; Definición de una Matriz.
 (define matriz
   (lambda (a)
     (lambda (b)
       ((par a) b)))
 )
 
+;; Matrices de ejemplo.
 (define M1 ((matriz uno) dos))
-(define nuevea ((par neuf) zero))
+
+
+;; Suma de Matrices.
+
+;; Producto de Matrices.
+
+;; Decisión sobre inversibilidad y cálculo de inversa y del rango.
+
+;; Cálculo de potencias (naturales) de matrices. 
+;; Este cálculo se tiene que hacer usando el algoritmo binario para el cálculo de potencias, también conocido como exponenciación binaria.
+
+
