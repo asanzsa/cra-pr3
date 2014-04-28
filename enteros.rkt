@@ -495,11 +495,14 @@
 ;; comprueba si la matriz es correcta.
 (define testmatrices (lambda (r)
                        (lambda (s)
-                       (- (testeneros r) (testeneros s)))))
+                       (- (testeneros r) (testeneros s))))
+)
 
 
 ;; Matrices de ejemplo.
-(define M1 ((matriz uno) dos))
+(define M1 ((matriz uno) dos)
+
+)
 
 
 ;; Suma de Matrices.
