@@ -478,9 +478,12 @@
 
 ; algoritmo de euclides extendido.
 ;http://www.dc.uba.ar/materias/algI/2013/cuat2/Material/Clase%2010
+;http://rinconmatematico.com/foros/index.php?topic=26742.0
+;http://www.dma.fi.upm.es/java/matematicadiscreta/aritmeticamodular/congruencias.html#3
 (define inverso (lambda (r)
                     (lambda (s)
-                      ((esigualent ((mcdent (primero r) (segundo r))) uno))))
+                      ((esigualent ((mcdent r) s) uno) )
+                      )))
 
 ;; Definición de una Matriz.
 (define matriz
@@ -488,6 +491,12 @@
     (lambda (b)
       ((par a) b)))
 )
+
+;; comprueba si la matriz es correcta.
+(define testmatrices (lambda (r)
+                       (lambda (s)
+                       (- (testeneros r) (testeneros s)))))
+
 
 ;; Matrices de ejemplo.
 (define M1 ((matriz uno) dos))
