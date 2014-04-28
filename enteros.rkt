@@ -495,7 +495,7 @@
 ;; comprueba si la matriz es correcta.
 (define testmatrices (lambda (r)
                        (lambda (s)
-                       (- (testeneros r) (testeneros s))))
+                       (- (testenteros r) (testenteros s))))
 )
 
 
