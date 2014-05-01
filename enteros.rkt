@@ -495,23 +495,34 @@
 ;; comprueba si la matriz es correcta.
 (define testmatrices (lambda (r)
                        (lambda (s)
-                       (- (testenteros r) (testenteros s))))
+                         (- (testenteros r) (testenteros s))))
 )
 
 
 ;; Matrices de ejemplo.
 (define M1 ((matriz uno) dos)
-
+)
+(define M2 ((matriz dos) cuatro)
 )
 
-
 ;; Suma de Matrices.
+;((sumamat M1) M2)
+;(testmatrices ((sumamat M1) M2))
+(define sumamat (lambda (n)
+                  (lambda (m)
+                    ((par ((sument (primero n)) (primero m))) ((sument (segundo n)) (segundo m)))
+                    )))
 
 ;; Producto de Matrices.
+;http://www.vitutor.com/algebra/matrices/producto.html
+
 
 ;; Decisión sobre inversibilidad y cálculo de inversa y del rango.
 
 ;; Cálculo de potencias (naturales) de matrices. 
 ;; Este cálculo se tiene que hacer usando el algoritmo binario para el cálculo de potencias, también conocido como exponenciación binaria.
+; ????? http://cvb.ehu.es/open_course_ware/castellano/tecnicas/fundamen_mate/contenidos/ejercicios/ejercicios-resueltos/potencias-de-matrices-cuadradas.pdf
+;http://pybonacci.wordpress.com/2013/08/28/pfs-exponenciacion-binaria/
+;punto 9: http://esfm.egormaximenko.com/linalg/matrix_powers_es.pdf
 
 
