@@ -441,21 +441,21 @@
 
 ;; Operación aritmética Suma.
 ;; ejemplos.- 
-;;    (((suma nueve) tres) cuatro)
-;;    (testenteros (((suma nueve) tres) cuatro))
-(define suma (lambda (r)
-               (lambda (s)
-                 (lambda (t)
-                      ((reduce ((sument r) s)) t)))))
+;;    (((suma nueve) seis) tres)
+;;    (testenteros (((suma nueve) seis) tres))
+(define suma (lambda (p)
+               (lambda (q)
+                 (lambda (r)
+                      ((reduce ((sument p) q)) r)))))
 
 ;; Operación aritmética Producto.
 ;; ejemplos.- 
 ;;    (((producto nueve) tres) cuatro)
 ;;    (testenteros (((producto nueve) tres) cuatro))
-(define producto (lambda (r)
-                    (lambda (s)
-                      (lambda (t)
-                        ((reduce ((prodent r) s)) t)))))
+(define producto (lambda (p)
+                    (lambda (q)
+                      (lambda (r)
+                        ((reduce ((prodent p) q)) r)))))
 
 ;; Operación aritmética Resta.
 ;; ejemplos.- 
@@ -471,21 +471,24 @@
 ;; COMPROBAR A PARTIR DE AQUÍ.
 ;; ###########################
 
-;; Operación aritmética Resta.
+;; Estudio inversibilidad.
 ;; ejemplos.- 
-;;    ((inverso nueve) tres)
-;;    (testenteros ((inverso nueve) tres) cuatro)
+
+;;    ((esinversible nueve) tres)
+
+(define esinversible (lambda (p)
+                       (lambda (r)
+                         ((esigualent ((mcdent p) r)) uno))))
+
 
 ; algoritmo de euclides extendido.
 ;http://www.dc.uba.ar/materias/algI/2013/cuat2/Material/Clase%2010
 ;http://rinconmatematico.com/foros/index.php?topic=26742.0
 ;http://www.dma.fi.upm.es/java/matematicadiscreta/aritmeticamodular/congruencias.html#3
-(define inverso (lambda (r)
-                    (lambda (s)
-                      ((esigualent ((mcdent r) s) uno) )
-                      )))
 
-;; Definición de una Matriz.
+
+
+;; Definición de una Matriz. Siendo a y b enteros (anteriormente definimos un entero como un par de naturales)
 (define matriz
   (lambda (a)
     (lambda (b)
@@ -494,35 +497,97 @@
 
 ;; comprueba si la matriz es correcta.
 (define testmatrices (lambda (r)
-                       (lambda (s)
-                         (- (testenteros r) (testenteros s))))
+                       (- (testenteros (primero r)) (testenteros (segundo r))))
 )
+
 
 
 ;; Matrices de ejemplo.
-(define M1 ((matriz uno) dos)
+
+(define MD1 ((par ((par cinq) un)) ((par deux) trois)))
+
+(define MD2 ((par ((par deux) trois)) ((par cinq) un)))
+
+(define M1 ((par dos) uno)
 )
-(define M2 ((matriz dos) cuatro)
+(define M2 ((par tres) uno)
+)
+(define M3 ((par cuatro) uno)
+)
+(define M4 ((matriz cinco) uno)
+)
+(define M5 ((matriz seis) uno)
+)
+(define M6 ((matriz siete) uno)
+)
+(define M7 ((matriz ocho) uno)
+)
+(define M8 ((matriz nueve) uno)
+)
+(define M9 ((matriz diez) uno)
+)
+(define M12 ((matriz veinte) ocho)
 )
 
-;; Suma de Matrices.
-;((sumamat M1) M2)
-;(testmatrices ((sumamat M1) M2))
-(define sumamat (lambda (n)
-                  (lambda (m)
-                    ((par ((sument (primero n)) (primero m))) ((sument (segundo n)) (segundo m)))
-                    )))
+;; Suma de Matrices en Zp.
 
-;; Producto de Matrices.
-;http://www.vitutor.com/algebra/matrices/producto.html
+(define summat (lambda (r)
+                   (lambda (s)
+                     (lambda (p)
+                       ((par ((reduce ((sument (primero r)) (primero s))) p)) ((reduce((sument (segundo r)) (segundo s))) p) )))))
 
 
+;; Producto de Matrices en Zp.
+(define prodmat (lambda (r)
+                    (lambda (s)
+                      (lambda (p)
+                       ((par ((reduce((par ((sumnat ((prodnat (primero (primero r))) (primero (primero s)))) ((prodnat (segundo (primero r))) (primero (segundo s))))) 
+                                           ((sumnat ((prodnat (primero (primero r))) (segundo (primero s)))) ((prodnat (segundo (primero r))) (segundo (segundo s)))))) p))
+                             ((reduce((par ((sumnat ((prodnat (primero (segundo r))) (primero (primero s)))) ((prodnat (segundo (segundo r))) (primero (segundo s))))) 
+                                           ((sumnat ((prodnat (segundo (primero r))) (segundo (primero s)))) ((prodnat (segundo (segundo r))) (segundo (segundo s)))))) p))
+                        ))))
+;; Determinante en Zp
+
+(define detmat (lambda (r)
+                   (lambda (p)
+                     ((reduce(reducir((par ((prodnat (primero (primero r))) (segundo (segundo r)))) ((prodnat (primero (segundo r))) (segundo (primero r)))))) p))))
+                     
 ;; Decisión sobre inversibilidad y cálculo de inversa y del rango.
+
+(define esinversiblemat (lambda (r)
+                          (lambda (p)
+                            (and (noesceroent((detmat r)p)) ((esigualent ((mcdent ((detmat r)p)) p)) uno)))))
+
+
+;;Calculo del inverso por fuerza bruta
+(define inverso
+    (lambda (s)
+        (lambda (r)
+            (((Y (lambda (f)
+                   (lambda (x)
+                     (lambda(y)
+                      (((esceroent y)  
+                       (lambda (no_use)
+                            cero     ;devuelve cero si no tiene inverso
+                        )
+                       ((esigualent ((restoent ((prodent x) y)) y)) un) 
+                       (lambda (no_use)
+                            y
+                        )
+                       (lambda (no_use)
+                            ((f x)((restaent y) un)) 
+                        )
+                        
+                    )
+                        cero)    ; Pasa cero como argumento de no_use
+                ))
+            ))
+                s) ; Pasa s como el valor inicial de x.
+          r)       ; Pasa r como el valor inicial de y.
+    )
+))
 
 ;; Cálculo de potencias (naturales) de matrices. 
 ;; Este cálculo se tiene que hacer usando el algoritmo binario para el cálculo de potencias, también conocido como exponenciación binaria.
-; ????? http://cvb.ehu.es/open_course_ware/castellano/tecnicas/fundamen_mate/contenidos/ejercicios/ejercicios-resueltos/potencias-de-matrices-cuadradas.pdf
-;http://pybonacci.wordpress.com/2013/08/28/pfs-exponenciacion-binaria/
-;punto 9: http://esfm.egormaximenko.com/linalg/matrix_powers_es.pdf
 
 
