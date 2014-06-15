@@ -1,3 +1,46 @@
+;.----------------.  .----------------.  .----------------.  .----------------.  .----------------. 
+;| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |
+;| |   ______     | || |  _________   | || |     ______   | || |   _____      | || |    ______    | |
+;| |  |_   __ \   | || | |_   ___  |  | || |   .' ___  |  | || |  |_   _|     | || |   / ____ `.  | |
+;| |    | |__) |  | || |   | |_  \_|  | || |  / .'   \_|  | || |    | |       | || |   `'  __) |  | |
+;| |    |  ___/   | || |   |  _|  _   | || |  | |         | || |    | |   _   | || |   _  |__ '.  | |
+;| |   _| |_      | || |  _| |___/ |  | || |  \ `.___.'\  | || |   _| |__/ |  | || |  | \____) |  | |
+;| |  |_____|     | || | |_________|  | || |   `._____.'  | || |  |________|  | || |   \______.'  | |
+;| |              | || |              | || |              | || |              | || |              | |
+;| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |
+; '----------------'  '----------------'  '----------------'  '----------------'  '----------------' 
+;
+;                    .----------------.  .----------------.  .----------------. 
+;                   | .--------------. || .--------------. || .--------------. |
+;                   | |     ______   | || |  _______     | || |      __      | |
+;                   | |   .' ___  |  | || | |_   __ \    | || |     /  \     | |
+;                   | |  / .'   \_|  | || |   | |__) |   | || |    / /\ \    | |
+;                   | |  | |         | || |   |  __ /    | || |   / ____ \   | |
+;                   | |  \ `.___.'\  | || |  _| |  \ \_  | || | _/ /    \ \_ | |
+;                   | |   `._____.'  | || | |____| |___| | || ||____|  |____|| |
+;                   | |              | || |              | || |              | |
+;                   | '--------------' || '--------------' || '--------------' |
+;                   '----------------'  '----------------'  '----------------'  
+;
+; ============
+; enteros.rkt
+; ============
+; Autores:  Susana Morales Sánchez
+;           Álvaro Sanz Sanz
+;
+; Fecha:    08/05/2014
+;
+; Descripción Funcional: 
+; Codificación de la artimetica en modulo r:
+;       - reducción a representante canónico
+;       - aritmética: suma, producto, resta, inverso (si existiera)
+; Definicion operaciones de matrices 2x2 en Zp 
+;       - suma y producto
+;       - determinante
+;       - decisión inversibilidad y cáculo inversa 
+;       - potencias de matrices  
+;*************************************************************************************************
+
 ; Booleanos. Son los únicos lambda-términos no currificados.
 
 (define true (lambda (x y) x))
@@ -467,13 +510,9 @@
                         ((reduce ((restaent r) s)) t)))))
 
 
-;; ###########################
-;; COMPROBAR A PARTIR DE AQUÍ.
-;; ###########################
-
 ;; Estudio inversibilidad.
 ;; ejemplos.- 
-
+;; ((esinversible nueve) dos)
 ;;    ((esinversible nueve) tres)
 
 (define esinversible (lambda (p)
@@ -481,113 +520,192 @@
                          ((esigualent ((mcdent p) r)) uno))))
 
 
-; algoritmo de euclides extendido.
-;http://www.dc.uba.ar/materias/algI/2013/cuat2/Material/Clase%2010
-;http://rinconmatematico.com/foros/index.php?topic=26742.0
-;http://www.dma.fi.upm.es/java/matematicadiscreta/aritmeticamodular/congruencias.html#3
+
+;;Calculo del inverso de "a" módulo "b"
+;(x z) será (a 1)
+;(y w)      (b 0)
+;; ((inverso tres) siete)
+(define inverso             
+    (lambda (a)                          
+        (lambda (b)
+            (((((Y (lambda (f)
+                   (lambda (x)
+                     (lambda(y)
+                       (lambda(z)
+                        (lambda(w)
+                          (((neg((esinversible x)y))
+                            (lambda (no_use) false)    ;si no es inversible devuelve false 
+                            ((esceroent x)  
+                             (lambda (no_use)
+                              w     ;w será el inverso
+                             )
+                             ((esceroent y)  
+                             (lambda (no_use)
+                               z     ;z será el inverso
+                             )                    
+                             (((esmayorent x) y)        ;; x=((sument x) ((prodent y)  ((restaent cero) ((cocienteent x) y))) )
+                       (lambda (no_use)                ;; z=((sument z) ((prodent w) ((restaent cero) ((cocienteent x) y))) )
+                           ((((f ((sument x) ((prodent y)  ((restaent cero) ((cocienteent x) y))))) y) ((sument z) ((prodent w) ((restaent cero) ((cocienteent x) y))))) w)
+                        )
+                       (lambda (no_use)   ;; y=((sument y) ((prodent x)  ((restaent cero) ((cocienteent y) x))) )
+                                          ;; w=((sument w) ((prodent z) ((restaent cero) ((cocienteent y) x))) )
+                            ((((f x ) ((sument y) ((prodent x)  ((restaent cero) ((cocienteent y) x))) )) z) ((sument w) ((prodent z) ((restaent cero) ((cocienteent y) x))) ))) 
+                        ))
+                        )
+                        )
+                        cero)    ; Pasa cero como argumento de no_use
+                ))))
+            ))
+                a) ; Pasa a como el valor inicial de x.
+          b)       ; Pasa b como el valor inicial de y.
+    uno) ; Pasa 1 como valor inicial de z
+  cero) ; Pasa 0 como valor inicial de w
+)))
 
 
-
-;; Definición de una Matriz. Siendo a y b enteros (anteriormente definimos un entero como un par de naturales)
+;; Definición de una Matriz. Siendo a, b,c y d enteros.
 (define matriz
   (lambda (a)
     (lambda (b)
-      ((par a) b)))
-)
+      (lambda (c)
+         (lambda (d)
+           ((par ((par a) b)) ((par c) d)))))))
 
-;; comprueba si la matriz es correcta.
-(define testmatrices (lambda (r)
-                       (- (testenteros (primero r)) (testenteros (segundo r))))
-)
 
+;; Lista una matriz.
+;; (listmatriz M3)
+(define listmatriz
+  (lambda (m)
+    (list (testenteros(primero (primero m))) (testenteros(segundo (primero m))) (testenteros(primero (segundo m))) (testenteros(segundo (segundo m))))))
+
+;; Lista una matriz con formato ((f11 f12) (f21 f22))
+;; (flistmatriz M3)
+(define flistmatriz
+  (lambda (m)
+    (list (list (testenteros(primero (primero m))) (testenteros(segundo (primero m)))) (list (testenteros(primero (segundo m))) (testenteros(segundo (segundo m)))))))
 
 
 ;; Matrices de ejemplo.
+(define M1  ((par ((par uno) dos)) ((par uno) uno)))
 
-(define MD1 ((par ((par cinq) un)) ((par deux) trois)))
+(define M4((par ((par uno) dos)) ((par tres) cuatro)))
 
-(define MD2 ((par ((par deux) trois)) ((par cinq) un)))
+(define M2 ((par ((par dos) tres)) ((par cuatro) cinco)))
 
-(define M1 ((par dos) uno)
-)
-(define M2 ((par tres) uno)
-)
-(define M3 ((par cuatro) uno)
-)
-(define M4 ((matriz cinco) uno)
-)
-(define M5 ((matriz seis) uno)
-)
-(define M6 ((matriz siete) uno)
-)
-(define M7 ((matriz ocho) uno)
-)
-(define M8 ((matriz nueve) uno)
-)
-(define M9 ((matriz diez) uno)
-)
-(define M12 ((matriz veinte) ocho)
-)
+(define M3 ((par ((par cuatro) cinco))  ((par dos) tres)))
+
+(define M5 ((par ((par cinco) cero)) ((par cero) cero)))
+
+(define M0 ((par ((par cero) cero)) ((par cero) cero)))
+
+(define MI ((par ((par uno) cero)) ((par cero) uno)))
+
+
+;;Matrices en Zp
+;;Reducir matrices a Zp
+;; (listmatriz ((reducematriz M3) tres))
+(define reducematriz (lambda (m)
+                       (lambda (p)
+                         ((par ((par ((reduce (primero (primero m)))p)) ((reduce (segundo (primero m)))p)) ) ((par ((reduce (primero (segundo m)))p)) ((reduce (segundo (segundo m)))p)) ))))
+                               
 
 ;; Suma de Matrices en Zp.
-
+;; (listmatriz (((summat M1) M2) diez))
 (define summat (lambda (r)
                    (lambda (s)
                      (lambda (p)
-                       ((par ((reduce ((sument (primero r)) (primero s))) p)) ((reduce((sument (segundo r)) (segundo s))) p) )))))
+                       ((reducematriz((par ((par((sument (primero (primero r))) (primero (primero s)))) ((sument (segundo (primero r))) (segundo (primero s)))))
+                             ((par((sument (primero (segundo r))) (primero (segundo s)))) ((sument (segundo (segundo r))) (segundo (segundo s)))))) p)))))
 
 
 ;; Producto de Matrices en Zp.
+;; (listmatriz (((prodmat M1) M2) tres))  
 (define prodmat (lambda (r)
                     (lambda (s)
                       (lambda (p)
-                       ((par ((reduce((par ((sumnat ((prodnat (primero (primero r))) (primero (primero s)))) ((prodnat (segundo (primero r))) (primero (segundo s))))) 
-                                           ((sumnat ((prodnat (primero (primero r))) (segundo (primero s)))) ((prodnat (segundo (primero r))) (segundo (segundo s)))))) p))
-                             ((reduce((par ((sumnat ((prodnat (primero (segundo r))) (primero (primero s)))) ((prodnat (segundo (segundo r))) (primero (segundo s))))) 
-                                           ((sumnat ((prodnat (segundo (primero r))) (segundo (primero s)))) ((prodnat (segundo (segundo r))) (segundo (segundo s)))))) p))
+                       ((reducematriz ((par ((par ((sument ((prodent (primero (primero r))) (primero (primero s)))) ((prodent (segundo (primero r))) (primero (segundo s))))) 
+                                           ((sument ((prodent (primero (primero r))) (segundo (primero s)))) ((prodent (segundo (primero r))) (segundo (segundo s))))))
+                             ((par ((sument ((prodent (primero (segundo r))) (primero (primero s)))) ((prodent (segundo (segundo r))) (primero (segundo s))))) 
+                                           ((sument ((prodent (segundo (primero r))) (segundo (primero s)))) ((prodent (segundo (segundo r))) (segundo (segundo s))))))) p)
                         ))))
-;; Determinante en Zp
 
+;; Determinante en Zp
+;; (testenteros ((detmat M2) tres))
 (define detmat (lambda (r)
                    (lambda (p)
-                     ((reduce(reducir((par ((prodnat (primero (primero r))) (segundo (segundo r)))) ((prodnat (primero (segundo r))) (segundo (primero r)))))) p))))
+                     ((reduce((restaent ((prodent (primero (primero r))) (segundo (segundo r)))) ((prodent (primero (segundo r))) (segundo (primero r))))) p))))
                      
-;; Decisión sobre inversibilidad y cálculo de inversa y del rango.
-
+;; Decisión sobre inversibilidad de una matriz
+;;((esinversiblemat M1) tres)
+;; ((esinversiblemat ((((matriz cuatro)dos)uno)tres)) siete)
+;; ((esinversiblemat ((((matriz cuatro)dos)uno)tres)) quince)
 (define esinversiblemat (lambda (r)
                           (lambda (p)
                             (and (noesceroent((detmat r)p)) ((esigualent ((mcdent ((detmat r)p)) p)) uno)))))
 
+;; Cálculo del rango de una matriz
+;; (testenteros ((rango M5)tres))
+;; (testenteros ((rango M1)tres))
+;; (testenteros ((rango M0)tres))
+(define rango (lambda (r)
+                (lambda (p)
+                   ((noesceroent ((detmat r) p)) dos ((and (and (esceroent (primero(primero r))) (esceroent (primero(segundo r))))
+                                                                   (and (esceroent (segundo(primero r))) (esceroent (segundo(segundo r)))))
+                                                                     cero
+                                                                     uno) )  )))
+                                   
 
-;;Calculo del inverso por fuerza bruta
-(define inverso
-    (lambda (s)
-        (lambda (r)
-            (((Y (lambda (f)
-                   (lambda (x)
-                     (lambda(y)
-                      (((esceroent y)  
-                       (lambda (no_use)
-                            cero     ;devuelve cero si no tiene inverso
-                        )
-                       ((esigualent ((restoent ((prodent x) y)) y)) un) 
-                       (lambda (no_use)
-                            y
-                        )
-                       (lambda (no_use)
-                            ((f x)((restaent y) un)) 
-                        )
-                        
-                    )
-                        cero)    ; Pasa cero como argumento de no_use
-                ))
-            ))
-                s) ; Pasa s como el valor inicial de x.
-          r)       ; Pasa r como el valor inicial de y.
-    )
-))
+;; Cálculo de inversa de una matriz en Zp
+;; siendo la matriz r =(a b)  r-1 = 1/((detmat r)p) (d  -b)
+;;                     (c d)                        (-c  a)
+
+;; (listmatriz((matrizinversa ((((matriz cuatro)dos)uno)tres)) siete))
+
+(define matrizinversa             
+    (lambda (r)                          
+        (lambda (p)
+            (((neg((esinversiblemat r)p)) (lambda (no_use) false) ;;si no es inversible devuelve false
+                   (lambda (no_use) ((reducematriz ((par ((par ((prodent ((inverso ((detmat r) p)) p)) (segundo (segundo r)))) ((prodent ((inverso ((detmat r) p)) p)) ((restaent cero) (segundo(primero r))))))
+                                                         ((par ((prodent ((inverso ((detmat r) p)) p)) ((restaent cero) (primero (segundo r))))) ((prodent ((inverso ((detmat r) p)) p)) (primero(primero r)))))) p))
+            ) cero) ;pasa cero como argumento de no_use
+        )))
+                                          
+                                 
 
 ;; Cálculo de potencias (naturales) de matrices. 
 ;; Este cálculo se tiene que hacer usando el algoritmo binario para el cálculo de potencias, también conocido como exponenciación binaria.
+;; Siendo r =(a b)
+;;           (c d),se calcula la potencia n de la matriz r en Zp
 
+;;(listmatriz (((potenciamatriz M1) cinq) veinte))
+;;(flistmatriz (((potenciamatriz M1) zero) veinte))
+;;(flistmatriz (((potenciamatriz MI) cinq) veinte))
+;;(flistmatriz (((potenciamatriz M1) deux) veinte))
 
+(define potenciamatriz             
+    (lambda (r)                          
+        (lambda (n)
+          (lambda (p)
+            ((((Y (lambda (f)
+                   (lambda (x)
+                     (lambda(y)
+                       (lambda (z)
+                         (((escero y)
+                            (lambda (no_use) MI) 
+                          (((esigualnat y) un)
+                            (lambda (no_use) ((reducematriz x) z))    ;si n es 1 devuelve r en Zp
+                            ((escero ((restonat y)deux))   ; si n es par:
+                             (lambda (no_use)               ; r potencia n/2 por r potencia n/2
+                               (((prodmat (((f x ) ((cocientenat y) deux)) z)) (((f x ) ((cocientenat y) deux)) z)) z)
+                              )                    
+                             (lambda (no_use) ;; si n es impar: r por r potencia n-1
+                               (((prodmat x) (((f x ) ((restanat y) un)) z)) z) 
+                              )
+                          )))
+                        cero)    ; Pasa cero como argumento de no_use
+                ))
+            )))
+                r) ; Pasa r como el valor inicial de x.
+          n)       ; Pasa n como el valor inicial de y.
+    p) ; Pasa p como valor inicial de z.
+))))
